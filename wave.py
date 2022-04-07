@@ -7,10 +7,18 @@ import sys, os, time, argparse
 
 def optimize(points, shifts, extent=1, target=None, periodic=True, rng=None):
 
-  '''Optimize vector arrangement on (periodic) grid'''
+  '''
+  Optimize vector arrangement on (periodic) grid.
+  Requires as input a N*D list of vector origins (points) and
+                    a N*D list of vectors (shifts).
+  Returns a tuple containing the optimized shifts,
+                             a list of valid swaps and
+                             the total number of swaps.
+  '''
 
   if not rng: rng = np.random
-  L,D = points.shape
+  shifts = shifts.copy()
+  L,D    = points.shape
   N = int(min([0,2,6,12,24,40,72,126,240,272][D], L-1)) # Kissing number in N-D
   # Find N nearest neighbours
   if periodic:
@@ -44,7 +52,7 @@ def optimize(points, shifts, extent=1, target=None, periodic=True, rng=None):
           ).sum(axis=1) * (1,0.95)).argmin()
       ):
         shifts[pair] = shifts[pair[::-1]]; valid.append(pair)
-  return valid, pairs.shape[0]
+  return shifts, valid, pairs.shape[0]
 
 def target_from_img(filename, pts, contour=None):
 
@@ -183,9 +191,9 @@ if __name__ == '__main__':
   # Optimize vector arrangement
   print('Optimizing vector arrangement')
   try:
-    valid, n_swaps = optimize(points=points, shifts=shifts,
-                              target=target, periodic=args.periodic,
-                              rng=rng, extent=args.extent)
+    shifts, valid, n_swaps = optimize(points=points, shifts=shifts,
+                                      target=target, periodic=args.periodic,
+                                      rng=rng, extent=args.extent)
     print('Accepted swaps: {}/{} ({:2.3f}%)'.format(
           len(valid), n_swaps, n_swaps and len(valid)/n_swaps*100))
     print('Unchanged vectors:', (shifts==s_orig).all(axis=1).sum())
