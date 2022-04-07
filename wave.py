@@ -178,8 +178,7 @@ if __name__ == '__main__':
   points = np.stack(np.meshgrid(*(np.arange(N),)*D)).reshape(D,-1).T/float(N)
   points[:,0] += points[:,1]*0.5
   points %= 1
-  shifts = rng.normal(size=(N**D,D)) / N
-  s_orig = shifts.copy()
+  s_orig = rng.normal(size=(N**D,D)) / N
 
   # Open target image if applicable
   if D == 2 and args.input != None:
@@ -191,9 +190,9 @@ if __name__ == '__main__':
   # Optimize vector arrangement
   print('Optimizing vector arrangement')
   try:
-    shifts, valid, n_swaps = optimize(points=points, shifts=shifts,
+    shifts, valid, n_swaps = optimize(points=points, shifts=s_orig,
                                       target=target, periodic=args.periodic,
-                                      rng=rng, extent=args.extent)
+                                      extent=args.extent, rng=rng)
     print('Accepted swaps: {}/{} ({:2.3f}%)'.format(
           len(valid), n_swaps, n_swaps and len(valid)/n_swaps*100))
     print('Unchanged vectors:', (shifts==s_orig).all(axis=1).sum())
