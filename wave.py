@@ -149,10 +149,10 @@ if __name__ == '__main__':
                       metavar='DUR', type=int,   default=10, 
                       help='Animation duration in seconds [%(default)s]')
   parser.add_argument('--fps', '-f',             dest='fps',       
-                      metavar='FPS', type=int,   default=30, 
+                      metavar='FPS', type=float, default=30, 
                       help='Animation frame rate in 1/seconds [%(default)s]')
   parser.add_argument('--resolution', '-r',      dest='resolution',
-                      metavar='RES', type=int,   default=1080, 
+                      metavar='RES', type=float, default=1080, 
                       help='Vertical resolution in pixels [%(default)s]')
   parser.add_argument('--aspect-ratio', '-ar',   dest='aspect_ratio',    
                       metavar='ASP', type=float, default=1.0, 
