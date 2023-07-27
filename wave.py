@@ -143,8 +143,11 @@ if __name__ == '__main__':
                       action='store_const',      default=False, const=True,  
                       help='Enable animation')
   parser.add_argument('--background', '-bg',     dest='background',     
-                      metavar='BG', type=str,   default='', 
+                      metavar='BG',  type=str,   default='', 
                       help='Background color [%(default)s]')
+  parser.add_argument('--width', '-g',           dest='width',
+                      metavar='DUR', type=float, default=-1, 
+                      help='Relative width of the arrow shafts [%(default)s]')
   parser.add_argument('--writer', '-w',          dest='writer',     
                       metavar='WRT', type=str,   default='ffmpeg', 
                       help='Animation backend [%(default)s]')
@@ -244,6 +247,7 @@ if __name__ == '__main__':
         anim.set_facecolor(args.background)
         ax.set_facecolor(args.background)
       anim.tight_layout()
+      width = None if args.width <= 0 else args.width
       colors = np.arctan2(*s_orig.T)
       swaps = [[0,0]] + list(map(list,valid)) 
       swapper = iter(swaps)
@@ -256,7 +260,8 @@ if __name__ == '__main__':
           except: pass
         ax.cla()
         U,V = s_orig.T
-        return plot2d(ax, X,Y,U,V, colors, cmap=cmap, scatter=args.scatter),
+        return plot2d(ax, X,Y,U,V, colors, cmap=cmap, scatter=args.scatter,
+                      width=width),
       # Distribute swaps over n_frames following a Gaussian
       n_frames = args.duration * args.fps
       assert n_frames
