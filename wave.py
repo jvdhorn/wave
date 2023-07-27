@@ -142,6 +142,9 @@ if __name__ == '__main__':
   parser.add_argument('--animation', '-a',       dest='animation', 
                       action='store_const',      default=False, const=True,  
                       help='Enable animation')
+  parser.add_argument('--background', '-bg',     dest='background',     
+                      metavar='BG', type=str,   default='', 
+                      help='Background color [%(default)s]')
   parser.add_argument('--writer', '-w',          dest='writer',     
                       metavar='WRT', type=str,   default='ffmpeg', 
                       help='Animation backend [%(default)s]')
@@ -237,6 +240,9 @@ if __name__ == '__main__':
       ax.axis('square')
       ax.set_aspect(1/args.aspect_ratio)
       ax.tick_params(left=False, bottom=False, labelleft=False, labelbottom=False)
+      if args.background:
+        anim.set_facecolor(args.background)
+        ax.set_facecolor(args.background)
       anim.tight_layout()
       colors = np.arctan2(*s_orig.T)
       swaps = [[0,0]] + list(map(list,valid)) 
@@ -264,7 +270,8 @@ if __name__ == '__main__':
         n_iter += 1
       # Start animating
       animation.FuncAnimation(anim, animate, frames=frames, blit=True, repeat=False
-        ).save(filename, writer=args.writer, dpi=args.resolution/6, fps=args.fps)
+        ).save(filename, writer=args.writer, dpi=args.resolution/6, fps=args.fps,
+        savefig_kwargs=dict(facecolor=anim.get_facecolor()))
       plt.close(anim)
       print('Wrote', filename)
 
